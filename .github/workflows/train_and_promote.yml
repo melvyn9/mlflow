@@ -12,6 +12,7 @@ jobs:
 
     env:
       MLFLOW_TRACKING_URI: sqlite:///mlflow.db
+      PYTHONPATH: ${{ github.workspace }}
 
     steps:
       - name: Checkout

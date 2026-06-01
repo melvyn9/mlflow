@@ -96,6 +96,7 @@ def train(args):
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     criterion = nn.CrossEntropyLoss()
 
+    mlflow.enable_system_metrics_logging()
     mlflow.set_experiment(EXPERIMENT_NAME)
 
     with mlflow.start_run() as run:
