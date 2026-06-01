@@ -1,0 +1,54 @@
+name: Train and Promote
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  train-and-promote:
+    runs-on: ubuntu-latest
+
+    env:
+      MLFLOW_TRACKING_URI: sqlite:///mlflow.db
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - name: Cache MNIST data
+        uses: actions/cache@v4
+        with:
+          path: data/
+          key: mnist-data-v1
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Train model
+        run: python src/train.py --epochs 5
+
+      - name: Evaluate and promote
+        # Exits 1 if test accuracy < 0.98, which fails this step and the workflow.
+        run: python src/evaluate.py --threshold 0.98
+
+      - name: Upload MLflow artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mlflow-db
+          path: mlflow.db
+          retention-days: 7
