@@ -10,5 +10,6 @@ build/
 .env
 venv/
 .venv/
+mlflow/
 *.pt
 *.pth

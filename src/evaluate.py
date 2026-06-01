@@ -12,12 +12,17 @@ import argparse
 import sys
 import os
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+os.environ.setdefault("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")
+
 import mlflow
 import mlflow.pytorch
 import torch
 from mlflow.tracking import MlflowClient
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
+from src.model import MNISTClassifier  # noqa: F401 — must be imported before load_model unpickles it
 
 MODEL_NAME = "mnist-classifier"
 DEFAULT_THRESHOLD = 0.98

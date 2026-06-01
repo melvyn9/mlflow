@@ -11,6 +11,8 @@ import subprocess
 import sys
 import os
 
+os.environ.setdefault("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")
+
 import mlflow
 import mlflow.pytorch
 import numpy as np
